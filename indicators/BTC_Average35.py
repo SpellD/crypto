@@ -20,6 +20,9 @@ priceBtc = pd.read_csv('https://api.blockchain.info/charts/market-price?timespan
 transactionsWithoutRich = pd.read_csv('https://api.blockchain.info/charts/n-transactions-excluding-popular?timespan=all&sampled=false&metadata=false&cors=true&format=csv',delimiter=',', names=['Time', 'Value'])
 transactions = pd.read_csv('https://api.blockchain.info/charts/n-transactions?timespan=all&sampled=false&metadata=false&cors=true&format=csv', delimiter=',', names=['Time', 'Value'])
 
+# MA 200 недель
+priceBtc['MA200'] = priceBtc.rolling(window=1400).mean()
+
 # Транзакции 100 самых богатых кошельков
 transactions['Value'] = transactions['Value'] - transactionsWithoutRich['Value']
 transactions['Value'] = transactions['Value'].apply(isNull)
