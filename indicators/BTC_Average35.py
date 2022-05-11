@@ -81,7 +81,7 @@ print('Top average price', priceBtc['TopAverage'].iloc[-1])
 print('Price', priceBtc['Price'].iloc[-1])
 
 # Вывод графиков
-priceBtc.plot(x='Time', y=['Price', 'TopAverage', 'RichSupport'], color=['white' ,'#FF8373', '#FFD473'], lw=0.7, style=['-' ,'--', '-'])
+priceBtc.plot(x='Time', y=['Price', 'TopAverage', 'RichSupport', 'MA200'], color=['white' ,'#FF8373', '#FFD473', 'cyan'], lw=0.7, style=['-' ,'--', '-'])
 ax = plt.gca()
 ax.set_facecolor('black')
 plt.yscale('log')
