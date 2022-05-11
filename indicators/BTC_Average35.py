@@ -20,8 +20,14 @@ priceBtc = pd.read_csv('https://api.blockchain.info/charts/market-price?timespan
 transactionsWithoutRich = pd.read_csv('https://api.blockchain.info/charts/n-transactions-excluding-popular?timespan=all&sampled=false&metadata=false&cors=true&format=csv',delimiter=',', names=['Time', 'Value'])
 transactions = pd.read_csv('https://api.blockchain.info/charts/n-transactions?timespan=all&sampled=false&metadata=false&cors=true&format=csv', delimiter=',', names=['Time', 'Value'])
 
-# MA 200 недель
-priceBtc['MA200'] = priceBtc.rolling(window=1400).mean()
+# MA 1460 дней и тмепература биткоина
+priceBtc['STANDART'] = priceBtc['Price'].rolling(window=1460).std()
+
+priceBtc['MA200'] = priceBtc['Price'].rolling(window=1460).mean()
+
+priceBtc['temp1'] = (priceBtc['MA200'] + priceBtc['STANDART']) * 2
+priceBtc['temp2'] = (priceBtc['MA200'] + priceBtc['STANDART']) * 6
+priceBtc['temp3'] = (priceBtc['MA200'] + priceBtc['STANDART']) * 8
 
 # Транзакции 100 самых богатых кошельков
 transactions['Value'] = transactions['Value'] - transactionsWithoutRich['Value']
@@ -81,7 +87,7 @@ print('Top average price', priceBtc['TopAverage'].iloc[-1])
 print('Price', priceBtc['Price'].iloc[-1])
 
 # Вывод графиков
-priceBtc.plot(x='Time', y=['Price', 'TopAverage', 'RichSupport', 'MA200'], color=['white' ,'#FF8373', '#FFD473', 'cyan'], lw=0.7, style=['-' ,'--', '-'])
+priceBtc.plot(x='Time', y=['Price', 'TopAverage', 'temp1', 'temp2', 'temp3', 'MA200'], color=['white' ,'#FF8373', 'green', 'orange', 'red', 'cyan'], lw=0.7, style=['-' ,'--', '-'])
 ax = plt.gca()
 ax.set_facecolor('black')
 plt.yscale('log')
