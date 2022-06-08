@@ -55,7 +55,6 @@ for i in transactions['Value']:
 
 transactions['SumTR'] = pd.Series(sumTransactions)
 
-# Непонятная херня но когда-нибудь она пригодится
 # td = []
 # d = 1
 # for i in transactions['SumTR']:
@@ -63,7 +62,7 @@ transactions['SumTR'] = pd.Series(sumTransactions)
 #     d += 1
 #     td.append(result)
 #
-# transactions['hui'] = pd.Series(td)
+# transactions['SumTR'] = pd.Series(td)
 
 # Цена в день умноженная на транзакции в день
 priceBtc['PV'] = priceBtc['Price'] * transactions['Value']
