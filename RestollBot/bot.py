@@ -52,6 +52,7 @@ async def start_command(message: types.Message):
                         '16.Шкафы кухонные'
                         )
 
+
 # Ввод пользователя
 @dp.message_handler()
 async def get_data(message: types.Message):
