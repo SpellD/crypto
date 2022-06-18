@@ -33,7 +33,7 @@ menu = {
 # Меню
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    await message.reply('---Выберите тип товаров---\n' +
+    await bot.send_message(message.from_user.id, '---Выберите тип товаров---\n' +
                         '1.Ванны моечные\n' +
                         '2.Воздухоочистители\n' +
                         '3.Вытяжные зонты\n' +
@@ -52,7 +52,6 @@ async def start_command(message: types.Message):
                         '16.Шкафы кухонные'
                         )
 
-
 # Ввод пользователя
 @dp.message_handler()
 async def get_data(message: types.Message):
@@ -63,13 +62,13 @@ async def get_data(message: types.Message):
     try:
         n = int(message.text)
     except:
-        await message.reply('Введите число')
+        await bot.send_message(message.from_user.id, 'Введите число')
 
     # Проверка на наличие в списке
     try:
         r = requests.get(menu.get(n))
     except:
-        await message.reply('Такого типа товаров не существует')
+        await bot.send_message(message.from_user.id, 'Такого типа товаров не существует')
 
     # Парсинг данных
     html = BS(r.content, 'html.parser')
@@ -90,7 +89,7 @@ async def get_data(message: types.Message):
         arr.append(product)
 
     data = ('\n\n'.join(arr))
-    await message.reply(data)
+    await bot.send_message(message.from_user.id, data)
 
 
 if __name__ == '__main__':
