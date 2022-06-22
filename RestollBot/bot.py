@@ -34,6 +34,13 @@ menu = {
 # Стартовое меню
 @dp.message_handler(commands=['start', 'menu'])
 async def start_command(message: types.Message):
+    name = message.from_user.first_name
+    img = open('preview.jpg', 'rb')
+    await bot.send_photo(message.chat.id, img)
+    await bot.send_message(message.chat.id,
+                           text=f'👋👋👋Добро пожаловать {name}👋👋👋! Этот телеграм бот был создан для того, чтобы '
+                                f'помочь тебе выбрать товар📦 на сайте restoll.ru 🌐!')
+
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
     keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
@@ -57,6 +64,8 @@ async def start_command(message: types.Message):
 # Меню
 @dp.callback_query_handler(text='back')
 async def send_random_value(call: types.CallbackQuery):
+    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
     keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
@@ -77,65 +86,64 @@ async def send_random_value(call: types.CallbackQuery):
     await call.message.answer("Меню", reply_markup=keyboard)
 
 
-# Основные функции
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
+    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+
     data1 = int(call.data)
 
     # Парсинг данных
-    if data1 in range(1, len(menu) + 1):
-        r = requests.get(menu.get(data1))
-        html = BS(r.content, 'html.parser')
-        a = html.find('div', class_="ajax_load cur block")
-        name = a.findAll('a', class_="dark_link js-notice-block__title option-font-bold font_sm")
-        link = a.findAll("div",
-                         class_="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-xxs-12 item item-parent "
-                                "catalog-block-view__item js-notice-block item_block")
-        price = a.findAll('span', class_="price_value")
+    r = requests.get(menu.get(data1))
+    html = BS(r.content, 'html.parser')
+    a = html.find('div', class_="ajax_load cur block")
+    name = a.findAll('a', class_="dark_link js-notice-block__title option-font-bold font_sm")
+    link = a.findAll("div",
+                     class_="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-xxs-12 item item-parent "
+                            "catalog-block-view__item js-notice-block item_block")
+    price = a.findAll('span', class_="price_value")
 
-        # Название товара
-        n = []
-        for i in name:
-            n.append(i.text)
+    # Название товара
+    n = []
+    for i in name:
+        n.append(i.text)
 
-        # Ссылка на товар
-        l = []
-        for i in link:
-            s = ('https://restoll.ru/' + str(
-                i.find('a', class_="dark_link js-notice-block__title option-font-bold font_sm").get('href')))
-            l.append(s)
+    # Ссылка на товар
+    l = []
+    for i in link:
+        s = ('https://restoll.ru/' + str(
+            i.find('a', class_="dark_link js-notice-block__title option-font-bold font_sm").get('href')))
+        l.append(s)
 
-        # Цена товара
-        p = []
-        for i in price:
-            v = (i.text) + ' рублей'
-            p.append(v)
+    # Цена товара
+    p = []
+    for i in price:
+        v = i.text + ' рублей'
+        p.append(v)
 
-        # Выравнивание значений
-        n.extend([0, ] * (len(p) - len(n)))
-        p.extend([0, ] * (len(n) - len(p)))
+    # Выравнивание значений
+    n.extend([0, ] * (len(p) - len(n)))
+    p.extend([0, ] * (len(n) - len(p)))
 
-        for i, item in enumerate(p):
-            if item == 0:
-                p[i] = 'Нет в наличии'
+    for i, item in enumerate(p):
+        if item == 0:
+            p[i] = 'Нет в наличии'
 
-        # Создание таблицы и объединение данных
-        df = pd.DataFrame()
-        df['Товар'] = n
-        df['Цена'] = p
-        df['Ссылка'] = l
-        df['Дата'] = df['Товар'] + ' - ' + df['Цена'] + '\n' + df['Ссылка']
+    # Создание таблицы и объединение данных
+    df = pd.DataFrame()
+    df['Товар'] = n
+    df['Цена'] = p
+    df['Ссылка'] = l
+    df['Дата'] = df['Товар'] + ' - ' + df['Цена'] + '\n' + df['Ссылка']
 
-        data = []
+    data = []
 
-        for i in df['Дата']:
-            data.append(i)
+    for i in df['Дата']:
+        data.append(i)
 
-        # Вывод данных
-        data = ('\n\n'.join(data))
-        await call.message.answer(data)
-    
-    # Назад в меню     
+    # Вывод данных
+    data = ('\n\n'.join(data))
+    await call.message.answer(data)
+
     back = types.InlineKeyboardMarkup()
     back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
     await call.message.answer(text='🔙', reply_markup=back)
