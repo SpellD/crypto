@@ -169,7 +169,7 @@ async def send_random_value(call: types.CallbackQuery):
 # Список товаров
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
-    global b
+    global b, msg
 
     # Удаление предыдущих сообщений
     try:
@@ -181,7 +181,6 @@ async def send_random_value(call: types.CallbackQuery):
     except:
         pass
 
-    global msg
     data1 = int(call.data)
 
     # Парсинг данных
