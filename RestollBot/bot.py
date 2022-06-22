@@ -1,9 +1,10 @@
+import pandas as pd
 import requests
-from bs4 import BeautifulSoup as BS
-from config import bot_token
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from bs4 import BeautifulSoup as BS
+from config import bot_token
 
 # Получение токена
 bot = Bot(token=bot_token)
@@ -31,66 +32,110 @@ menu = {
 
 
 # Меню
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands=['start', 'menu'])
 async def start_command(message: types.Message):
-    await message.reply('---Выберите тип товаров---\n' +
-                        '1.Ванны моечные\n' +
-                        '2.Воздухоочистители\n' +
-                        '3.Вытяжные зонты\n' +
-                        '4.Модульные стелажные системы\n' +
-                        '5.Подставки и подтоварники\n' +
-                        '6.Полки\n' +
-                        '7.Прилавки и модули\n' +
-                        '8.Стелажи кухонные\n' +
-                        '9.Столы для грязной и чистой посуды\n' +
-                        '10.Столы и колоды разрубочные\n' +
-                        '11.Столы кухонные\n' +
-                        '12.Тележки производственные\n' +
-                        '13.Тележки сервировочные\n' +
-                        '14.Тележки-шпильки\n' +
-                        '15.Шкафы для одежды\n' +
-                        '16.Шкафы кухонные'
-                        )
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
+    keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
+    keyboard.add(types.InlineKeyboardButton(text="Вытяжные зонты", callback_data="3"))
+    keyboard.add(types.InlineKeyboardButton(text="Модульные стелажные системы", callback_data="4"))
+    keyboard.add(types.InlineKeyboardButton(text="Подставки и подтоварники", callback_data="5"))
+    keyboard.add(types.InlineKeyboardButton(text="Полки", callback_data="6"))
+    keyboard.add(types.InlineKeyboardButton(text="Прилавки и модули", callback_data="7"))
+    keyboard.add(types.InlineKeyboardButton(text="Стелажи кухонные", callback_data="8"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы для грязной и чистой посуды", callback_data="9"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы и колоды разрубочные", callback_data="10"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы кухонные", callback_data="11"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки производственные", callback_data="12"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки сервировочные", callback_data="13"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки-шпильки", callback_data="14"))
+    keyboard.add(types.InlineKeyboardButton(text="Шкафы для одежды", callback_data="15"))
+    keyboard.add(types.InlineKeyboardButton(text="Шкафы кухонные", callback_data="16"))
+    await message.answer("Меню", reply_markup=keyboard)
 
 
-# Ввод пользователя
-@dp.message_handler()
-async def get_data(message: types.Message):
+@dp.callback_query_handler(text='back')
+async def send_random_value(call: types.CallbackQuery):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
+    keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
+    keyboard.add(types.InlineKeyboardButton(text="Вытяжные зонты", callback_data="3"))
+    keyboard.add(types.InlineKeyboardButton(text="Модульные стелажные системы", callback_data="4"))
+    keyboard.add(types.InlineKeyboardButton(text="Подставки и подтоварники", callback_data="5"))
+    keyboard.add(types.InlineKeyboardButton(text="Полки", callback_data="6"))
+    keyboard.add(types.InlineKeyboardButton(text="Прилавки и модули", callback_data="7"))
+    keyboard.add(types.InlineKeyboardButton(text="Стелажи кухонные", callback_data="8"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы для грязной и чистой посуды", callback_data="9"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы и колоды разрубочные", callback_data="10"))
+    keyboard.add(types.InlineKeyboardButton(text="Столы кухонные", callback_data="11"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки производственные", callback_data="12"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки сервировочные", callback_data="13"))
+    keyboard.add(types.InlineKeyboardButton(text="Тележки-шпильки", callback_data="14"))
+    keyboard.add(types.InlineKeyboardButton(text="Шкафы для одежды", callback_data="15"))
+    keyboard.add(types.InlineKeyboardButton(text="Шкафы кухонные", callback_data="16"))
+    await call.message.answer("Меню", reply_markup=keyboard)
 
-    global n, r
 
-    # Проверка на ошибку числа
-    try:
-        n = int(message.text)
-    except:
-        await message.reply('Введите число')
-
-    # Проверка на наличие в списке
-    try:
-        r = requests.get(menu.get(n))
-    except:
-        await message.reply('Такого типа товаров не существует')
+@dp.callback_query_handler()
+async def send_random_value(call: types.CallbackQuery):
+    data1 = int(call.data)
 
     # Парсинг данных
-    html = BS(r.content, 'html.parser')
-    a = html.find('div', class_="ajax_load cur block")
-    a = a.findAll("div",
-                  class_="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-xxs-12 item item-parent catalog-block-view__item "
-                         "js-notice-block item_block")
+    if data1 in range(1, len(menu) + 1):
+        r = requests.get(menu.get(data1))
+        html = BS(r.content, 'html.parser')
+        a = html.find('div', class_="ajax_load cur block")
+        name = a.findAll('a', class_="dark_link js-notice-block__title option-font-bold font_sm")
+        link = a.findAll("div",
+                         class_="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-xxs-12 item item-parent "
+                                "catalog-block-view__item js-notice-block item_block")
+        price = a.findAll('span', class_="price_value")
 
-    # Вывод товаров
-    arr = []
+        # Название товара
+        n = []
+        for i in name:
+            n.append(i.text)
 
-    for i in a:
-        t = i.text.strip().rsplit('\n')
-        t = [value for value in t if value]
-        price = str(t[2])
-        price = price.replace(' ', '', 1)
-        product = (t[0] + ' - ' + price)
-        arr.append(product)
+        # Ссылка на товар
+        l = []
+        for i in link:
+            s = ('https://restoll.ru/' + str(
+                i.find('a', class_="dark_link js-notice-block__title option-font-bold font_sm").get('href')))
+            l.append(s)
 
-    data = ('\n\n'.join(arr))
-    await message.reply(data)
+        # Цена товара
+        p = []
+        for i in price:
+            v = (i.text) + ' рублей'
+            p.append(v)
+
+        # Выравнивание значений
+        n.extend([0, ] * (len(p) - len(n)))
+        p.extend([0, ] * (len(n) - len(p)))
+
+        for i, item in enumerate(p):
+            if item == 0:
+                p[i] = 'Нет в наличии'
+
+        # Создание таблицы и объединение данных
+        df = pd.DataFrame()
+        df['Товар'] = n
+        df['Цена'] = p
+        df['Ссылка'] = l
+        df['Дата'] = df['Товар'] + ' - ' + df['Цена'] + '\n' + df['Ссылка']
+
+        data = []
+
+        for i in df['Дата']:
+            data.append(i)
+
+        # Вывод данных
+        data = ('\n\n'.join(data))
+        await call.message.answer(data)
+
+    back = types.InlineKeyboardMarkup()
+    back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
+    await call.message.answer(text='🔙', reply_markup=back)
 
 
 if __name__ == '__main__':
