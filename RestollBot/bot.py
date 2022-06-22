@@ -33,19 +33,33 @@ menu = {
 
 
 # Стартовое меню
-@dp.message_handler(commands=['start', 'menu'])
+@dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
+    global hello, pic
 
     # Удаление предыдущих сообщений
     try:
         await bot.delete_message(message.from_user.id, message_id=message.message_id)
+    except:
+        pass
+    try:
         await bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)
+    except:
+        pass
+    try:
         await msg.delete()
     except:
         pass
+    try:
+        await b.delete()
+    except:
+        pass
+    try:
+        await b1.delete()
+    except:
+        pass
 
-    global hello, pic
-    
+    des = open('menu.jpg')
     # Приветствие
     name = message.from_user.first_name
     img = open('preview.jpg', 'rb')
@@ -55,36 +69,60 @@ async def start_command(message: types.Message):
                                 f'помочь тебе выбрать товар📦 на сайте restoll.ru 🌐!')
 
     # Кнопки
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
-    keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
-    keyboard.add(types.InlineKeyboardButton(text="Вытяжные зонты", callback_data="3"))
-    keyboard.add(types.InlineKeyboardButton(text="Модульные стелажные системы", callback_data="4"))
-    keyboard.add(types.InlineKeyboardButton(text="Подставки и подтоварники", callback_data="5"))
-    keyboard.add(types.InlineKeyboardButton(text="Полки", callback_data="6"))
-    keyboard.add(types.InlineKeyboardButton(text="Прилавки и модули", callback_data="7"))
-    keyboard.add(types.InlineKeyboardButton(text="Стелажи кухонные", callback_data="8"))
-    keyboard.add(types.InlineKeyboardButton(text="Столы для грязной и чистой посуды", callback_data="9"))
-    keyboard.add(types.InlineKeyboardButton(text="Столы и колоды разрубочные", callback_data="10"))
-    keyboard.add(types.InlineKeyboardButton(text="Столы кухонные", callback_data="11"))
-    keyboard.add(types.InlineKeyboardButton(text="Тележки производственные", callback_data="12"))
-    keyboard.add(types.InlineKeyboardButton(text="Тележки сервировочные", callback_data="13"))
-    keyboard.add(types.InlineKeyboardButton(text="Тележки-шпильки", callback_data="14"))
-    keyboard.add(types.InlineKeyboardButton(text="Шкафы для одежды", callback_data="15"))
-    keyboard.add(types.InlineKeyboardButton(text="Шкафы кухонные", callback_data="16"))
-    await message.answer("Меню", reply_markup=keyboard)
+    # keyboard = types.InlineKeyboardMarkup()
+    # keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
+    # keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
+    # keyboard.add(types.InlineKeyboardButton(text="Вытяжные зонты", callback_data="3"))
+    # keyboard.add(types.InlineKeyboardButton(text="Модульные стелажные системы", callback_data="4"))
+    # keyboard.add(types.InlineKeyboardButton(text="Подставки и подтоварники", callback_data="5"))
+    # keyboard.add(types.InlineKeyboardButton(text="Полки", callback_data="6"))
+    # keyboard.add(types.InlineKeyboardButton(text="Прилавки и модули", callback_data="7"))
+    # keyboard.add(types.InlineKeyboardButton(text="Стелажи кухонные", callback_data="8"))
+    # keyboard.add(types.InlineKeyboardButton(text="Столы для грязной и чистой посуды", callback_data="9"))
+    # keyboard.add(types.InlineKeyboardButton(text="Столы и колоды разрубочные", callback_data="10"))
+    # keyboard.add(types.InlineKeyboardButton(text="Столы кухонные", callback_data="11"))
+    # keyboard.add(types.InlineKeyboardButton(text="Тележки производственные", callback_data="12"))
+    # keyboard.add(types.InlineKeyboardButton(text="Тележки сервировочные", callback_data="13"))
+    # keyboard.add(types.InlineKeyboardButton(text="Тележки-шпильки", callback_data="14"))
+    # keyboard.add(types.InlineKeyboardButton(text="Шкафы для одежды", callback_data="15"))
+    # keyboard.add(types.InlineKeyboardButton(text="Шкафы кухонные", callback_data="16"))
+    # await message.answer("Меню", reply_markup=keyboard)
+    mm = types.InlineKeyboardMarkup()
+    mm.add(types.InlineKeyboardButton(text="Меню", callback_data="back"))
+    await message.answer(text='Restoll', reply_markup=mm)
 
 
 # Меню
 @dp.callback_query_handler(text='back')
 async def send_random_value(call: types.CallbackQuery):
+    global b1
 
     # Удаление предыдущих сообщений
     try:
+        await hello.delete()
+    except:
+        pass
+    try:
+        await pic.delete()
+    except:
+        pass
+    try:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    except:
+        pass
+    try:
         await msg.delete()
     except:
         pass
+    try:
+        await b.delete()
+    except:
+        pass
+    try:
+        await b1.delete()
+    except:
+        pass
+
 
     # Кнопки
     keyboard = types.InlineKeyboardMarkup()
@@ -104,17 +142,20 @@ async def send_random_value(call: types.CallbackQuery):
     keyboard.add(types.InlineKeyboardButton(text="Тележки-шпильки", callback_data="14"))
     keyboard.add(types.InlineKeyboardButton(text="Шкафы для одежды", callback_data="15"))
     keyboard.add(types.InlineKeyboardButton(text="Шкафы кухонные", callback_data="16"))
-    await call.message.answer("Меню", reply_markup=keyboard)
+    b1 = await call.message.answer("Меню", reply_markup=keyboard)
 
 
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
+    global b
 
     # Удаление предыдущих сообщений
     try:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
-        await hello.delete()
-        await pic.delete()
+    except:
+        pass
+    try:
+        await b1.delete()
     except:
         pass
 
@@ -175,7 +216,7 @@ async def send_random_value(call: types.CallbackQuery):
 
     back = types.InlineKeyboardMarkup()
     back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
-    await call.message.answer(text='🔙', reply_markup=back)
+    b = await call.message.answer(text='🔙', reply_markup=back)
 
 
 if __name__ == '__main__':
