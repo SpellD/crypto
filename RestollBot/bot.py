@@ -4,6 +4,7 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from bs4 import BeautifulSoup as BS
+
 from config import bot_token
 
 # Получение токена
@@ -34,10 +35,20 @@ menu = {
 # Стартовое меню
 @dp.message_handler(commands=['start', 'menu'])
 async def start_command(message: types.Message):
+    
+    # Удаление предыдущих сообщений
+    try:
+        await bot.delete_message(message.from_user.id, message_id=message.message_id)
+        await bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)
+        await msg.delete()
+    except:
+        pass
+
+    global sas, lolka
     name = message.from_user.first_name
     img = open('preview.jpg', 'rb')
-    await bot.send_photo(message.chat.id, img)
-    await bot.send_message(message.chat.id,
+    lolka = await bot.send_photo(message.chat.id, img)
+    sas = await bot.send_message(message.chat.id,
                            text=f'👋👋👋Добро пожаловать {name}👋👋👋! Этот телеграм бот был создан для того, чтобы '
                                 f'помочь тебе выбрать товар📦 на сайте restoll.ru 🌐!')
 
@@ -64,7 +75,13 @@ async def start_command(message: types.Message):
 # Меню
 @dp.callback_query_handler(text='back')
 async def send_random_value(call: types.CallbackQuery):
-    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    
+    # Удаление предыдущих сообщений
+    try:
+        await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+        await msg.delete()
+    except:
+        pass
 
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
@@ -88,8 +105,16 @@ async def send_random_value(call: types.CallbackQuery):
 
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
-    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    
+    # Удаление предыдущих сообщений
+    try:
+        await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+        await sas.delete()
+        await lolka.delete()
+    except:
+        pass
 
+    global msg
     data1 = int(call.data)
 
     # Парсинг данных
@@ -142,7 +167,7 @@ async def send_random_value(call: types.CallbackQuery):
 
     # Вывод данных
     data = ('\n\n'.join(data))
-    await call.message.answer(data)
+    msg = await call.message.answer(data)
 
     back = types.InlineKeyboardMarkup()
     back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
