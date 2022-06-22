@@ -31,7 +31,7 @@ menu = {
 }
 
 
-# Меню
+# Стартовое меню
 @dp.message_handler(commands=['start', 'menu'])
 async def start_command(message: types.Message):
     keyboard = types.InlineKeyboardMarkup()
@@ -54,6 +54,7 @@ async def start_command(message: types.Message):
     await message.answer("Меню", reply_markup=keyboard)
 
 
+# Меню
 @dp.callback_query_handler(text='back')
 async def send_random_value(call: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup()
@@ -76,6 +77,7 @@ async def send_random_value(call: types.CallbackQuery):
     await call.message.answer("Меню", reply_markup=keyboard)
 
 
+# Основные функции
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
     data1 = int(call.data)
@@ -132,7 +134,8 @@ async def send_random_value(call: types.CallbackQuery):
         # Вывод данных
         data = ('\n\n'.join(data))
         await call.message.answer(data)
-
+    
+    # Назад в меню     
     back = types.InlineKeyboardMarkup()
     back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
     await call.message.answer(text='🔙', reply_markup=back)
