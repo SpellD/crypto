@@ -35,7 +35,7 @@ menu = {
 # Стартовое меню
 @dp.message_handler(commands=['start', 'menu'])
 async def start_command(message: types.Message):
-    
+
     # Удаление предыдущих сообщений
     try:
         await bot.delete_message(message.from_user.id, message_id=message.message_id)
@@ -44,14 +44,17 @@ async def start_command(message: types.Message):
     except:
         pass
 
-    global sas, lolka
+    global hello, pic
+    
+    # Приветствие
     name = message.from_user.first_name
     img = open('preview.jpg', 'rb')
-    lolka = await bot.send_photo(message.chat.id, img)
-    sas = await bot.send_message(message.chat.id,
+    pic = await bot.send_photo(message.chat.id, img)
+    hello = await bot.send_message(message.chat.id,
                            text=f'👋👋👋Добро пожаловать {name}👋👋👋! Этот телеграм бот был создан для того, чтобы '
                                 f'помочь тебе выбрать товар📦 на сайте restoll.ru 🌐!')
 
+    # Кнопки
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
     keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
@@ -75,7 +78,7 @@ async def start_command(message: types.Message):
 # Меню
 @dp.callback_query_handler(text='back')
 async def send_random_value(call: types.CallbackQuery):
-    
+
     # Удаление предыдущих сообщений
     try:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
@@ -83,6 +86,7 @@ async def send_random_value(call: types.CallbackQuery):
     except:
         pass
 
+    # Кнопки
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Ванны моечные", callback_data="1"))
     keyboard.add(types.InlineKeyboardButton(text="Воздухоочистители", callback_data="2"))
@@ -105,12 +109,12 @@ async def send_random_value(call: types.CallbackQuery):
 
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
-    
+
     # Удаление предыдущих сообщений
     try:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
-        await sas.delete()
-        await lolka.delete()
+        await hello.delete()
+        await pic.delete()
     except:
         pass
 
