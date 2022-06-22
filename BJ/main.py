@@ -102,7 +102,7 @@ def score(dealer_hand, player_hand):
         print("Ты победил - у диллера больше 21!\n")
     elif total(player_hand) < total(dealer_hand):
         print_results(dealer_hand, player_hand)
-    # print ("Sorry. Your score isn't higher than the dealer. You lose.\n")
+        print ("Ты проиграл - у диллера счет больше чем у тебя.\n")
     elif total(player_hand) > total(dealer_hand):
         print_results(dealer_hand, player_hand)
         print("Ты победил - твой счет больше чем у диллера!\n")
