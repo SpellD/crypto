@@ -235,6 +235,7 @@ async def send_random_value(call: types.CallbackQuery):
     data = ('\n\n'.join(data))
     msg = await call.message.answer(data)
 
+    # Кнопка назад         
     back = types.InlineKeyboardMarkup()
     back.add(types.InlineKeyboardButton(text="Назад", callback_data="back"))
     b = await call.message.answer(text='🔙', reply_markup=back)
@@ -242,3 +243,4 @@ async def send_random_value(call: types.CallbackQuery):
 
 if __name__ == '__main__':
     executor.start_polling(dp)
+
