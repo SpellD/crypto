@@ -39,6 +39,14 @@ async def start_command(message: types.Message):
 
     # Удаление предыдущих сообщений
     try:
+        await pic.delete()
+    except:
+        pass
+    try:
+        await hello.delete()
+    except:
+        pass
+    try:
         await bot.delete_message(message.from_user.id, message_id=message.message_id)
     except:
         pass
@@ -102,10 +110,10 @@ async def send_random_value(call: types.CallbackQuery):
         await hello.delete()
     except:
         pass
-    try:
-        await pic.delete()
-    except:
-        pass
+    # try:
+    #     await pic.delete()
+    # except:
+    #     pass
     try:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
     except:
