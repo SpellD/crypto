@@ -166,6 +166,7 @@ async def send_random_value(call: types.CallbackQuery):
     b1 = await call.message.answer("Меню", reply_markup=keyboard)
 
 
+# Список товаров
 @dp.callback_query_handler()
 async def send_random_value(call: types.CallbackQuery):
     global b
