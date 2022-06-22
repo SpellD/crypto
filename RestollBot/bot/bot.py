@@ -71,7 +71,9 @@ async def start_command(message: types.Message):
     except:
         pass
 
+    # Открываем картинку
     des = open('menu.jpg')
+    
     # Приветствие
     name = message.from_user.first_name
     img = open('preview.jpg', 'rb')
@@ -138,7 +140,8 @@ async def send_random_value(call: types.CallbackQuery):
         await b1.delete()
     except:
         pass
-
+    
+    # Открываем картинку
     img2 = open('menu.jpg', 'rb')
     pic2 = await call.message.answer_photo(img2)
 
